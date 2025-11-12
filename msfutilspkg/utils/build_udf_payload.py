@@ -3,7 +3,7 @@ import inspect
 import importlib
 
 # === CONFIG ===
-UDF_FUNCTION = "msfutilspkg.utils.sync_dataframes_with_old_new"  # module.path.to.function
+UDF_FUNCTION = "msfutilspkg.utils.data_utils.sync_dataframes_with_old_new"  # module.path.to.function
 DISPLAY_NAME = "sync_dataframes_with_old_new"
 DESCRIPTION = "Synchronize two DataFrames and detect record-level changes."
 OUTPUT_FILE = "udf_payload.json"
