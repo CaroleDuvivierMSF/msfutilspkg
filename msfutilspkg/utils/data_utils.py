@@ -1,13 +1,15 @@
-from typing import Dict, List, Union
+# Fabric function requirements
+# packages:
+#   - pandas
 import pandas as pd
 
 
 def sync_dataframes_with_old_new(
-    new_records: pd.DataFrame,
+    newRecords: pd.DataFrame,
     historic: pd.DataFrame,
-    key: Union[str, List[str]], 
-    show_changed_col: bool = False
-) -> Dict[str, pd.DataFrame]:
+    key: list, 
+    showChangedCol: bool,
+) -> dict:
     """
     Synchronize two DataFrames (new vs. historic) and detect record-level changes.
 
@@ -20,13 +22,13 @@ def sync_dataframes_with_old_new(
 
     Parameters
     ----------
-        new_records : pandas.DataFrame
+        newRecords : pandas.DataFrame
             The incoming dataset containing the most recent records.
         historic : pandas.DataFrame
             The reference or previously stored dataset to compare against.
         key : str
             The column name that uniquely identifies each record across both DataFrames.
-        show_changed_col: bool, optional
+        showChangedCol: bool, optional
             If True, the `to_update` DataFrame will include a `changed_columns` column
             listing which non-key fields were modified, as well as show the previous values. Default is False.
 
@@ -35,11 +37,11 @@ def sync_dataframes_with_old_new(
         dict of {str: pandas.DataFrame}
             A dictionary with the following DataFrames:
 
-            - **to_create** : Records present in `new_records` but not in `historic`.
+            - **to_create** : Records present in `newRecords` but not in `historic`.
             - **to_update** : Records where the same key exists in both DataFrames but 
             at least one non-key field differs (the returned DataFrame contains the 
-            *new values* from `new_records`).
-            - **to_delete** : Records present in `historic` but not in `new_records`.
+            *new values* from `newRecords`).
+            - **to_delete** : Records present in `historic` but not in `newRecords`.
             - **to_keep** : Records identical in both DataFrames (no change detected).
 
     Notes
@@ -83,23 +85,20 @@ def sync_dataframes_with_old_new(
     pandas.merge : SQL-style DataFrame joins, useful for alternative diff logic.
 
     """
-    if isinstance(key, str):
-        key = [key]
-
     # --- To create ---
-    merged_create = new_records.merge(historic[key], on=key, how="left", indicator=True)
+    merged_create = newRecords.merge(historic[key], on=key, how="left", indicator=True)
     to_create = merged_create.loc[merged_create["_merge"] == "left_only"].drop(columns=["_merge"])
     to_create["changed_columns"] = None # For consistency in columns with the update case
     to_create["type_of_change"] = "Create"
 
     # --- To delete ---
-    merged_delete = historic.merge(new_records[key], on=key, how="left", indicator=True)
+    merged_delete = historic.merge(newRecords[key], on=key, how="left", indicator=True)
     to_delete = merged_delete.loc[merged_delete["_merge"] == "left_only"].drop(columns=["_merge"])
     to_delete["type_of_change"] = "Delete"
     to_delete["changed_columns"] = None # For consistency in columns with the update case
 
     # --- Merge for comparison ---
-    merged = new_records.merge(
+    merged = newRecords.merge(
         historic,
         on=key,
         how="inner",
@@ -107,7 +106,7 @@ def sync_dataframes_with_old_new(
     )
 
     # Non-key columns
-    non_key_cols = [col for col in new_records.columns if col not in key]
+    non_key_cols = [col for col in newRecords.columns if col not in key]
     old_non_key_cols = ["old_" + col for col in non_key_cols]
 
     for col in old_non_key_cols:
@@ -138,7 +137,7 @@ def sync_dataframes_with_old_new(
 
     to_update['changed_columns'] = changed_columns[has_change].values
 
-    to_update = to_update[key + non_key_cols if show_changed_col is False else to_update.columns]
+    to_update = to_update[key + non_key_cols if showChangedCol is False else to_update.columns]
     to_update["type_of_change"] = "Update"
 
     return {

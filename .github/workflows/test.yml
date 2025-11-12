@@ -28,3 +28,17 @@ jobs:
       - name: Run tests
         run: |
           pytest tests/ --maxfail=1 --disable-warnings -v
+        
+            # 6️⃣ Package UDF code with versioning
+
+      - name: Build UDF payload
+        if: success()
+        run: python build_udf_payload.py
+
+        # ✅ Instead of publishing to Fabric, just save the JSON as an artifact
+      - name: Upload UDF payload for inspection
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: udf-payload
+          path: udf_payload.json
