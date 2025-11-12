@@ -33,7 +33,7 @@ jobs:
 
       - name: Build UDF payload
         if: success()
-        run: python build_udf_payload.py
+        run: python utils/build_udf_payload.py
 
         # ✅ Instead of publishing to Fabric, just save the JSON as an artifact
       - name: Upload UDF payload for inspection
