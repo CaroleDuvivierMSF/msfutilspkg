@@ -11,5 +11,11 @@ setup(
         "sqlalchemy==2.0.43",
         "pandas==2.3.3",
         "numpy==2.3.3"
-  ],
+    ],
+    extras_require={
+        "dev": [
+            "pytest>=7.0",
+            "pytest-cov>=7.0.0"  # optional for coverage reports
+        ]
+    }
 )
