@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: msfutilspkg
+Version: 0.1.0
+Summary: Helper functions for Fabric notebooks
+Requires-Python: >=3.8
+Requires-Dist: pandas>=1.5.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: deltalake==1.2.1
+Requires-Dist: sqlalchemy==2.0.43
+Requires-Dist: pandas==2.3.3
+Requires-Dist: numpy==2.3.3
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
