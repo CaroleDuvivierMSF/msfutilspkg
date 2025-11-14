@@ -9,7 +9,7 @@ Requires-Dist: pandas==2.3.3
 Requires-Dist: numpy==2.3.3
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
-Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: pytest-cov>=7.0.0; extra == "dev"
 Dynamic: provides-extra
 Dynamic: requires-dist
 Dynamic: requires-python

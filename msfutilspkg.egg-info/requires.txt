@@ -5,4 +5,4 @@ numpy==2.3.3
 
 [dev]
 pytest>=7.0
-pytest-cov
+pytest-cov>=7.0.0
