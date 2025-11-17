@@ -18,9 +18,9 @@ script_source = inspect.getsource(func)
 payload = {
     "displayName": DISPLAY_NAME,
     "description": DESCRIPTION,
-    "scriptContent": script_source,
+    "source": script_source,
     "language": "python",
-    "functionType": "UserDataFunction"
+    "type": "UserDataFunction"
 }
 
 with open(OUTPUT_FILE, "w") as f:
