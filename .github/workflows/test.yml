@@ -24,22 +24,37 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
-
       - name: Run tests
         run: |
           pytest tests/ --maxfail=1 --disable-warnings -v
-        
+
+      # 🔨 Build Python package (sdist + wheel)
+      - name: Build Python package
+        if: success()
+        run: |
+          python -m pip install build
+          python -m build
+
+      # 📦 Upload built package artifacts
+      - name: Upload Python package artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
       - name: Build UDF payload
         if: success()
         run: python msfutilspkg/utils/build_udf_payload.py
 
-        # ✅ Instead of publishing to Fabric, just save the JSON as an artifact
+      # ✅ Instead of publishing to Fabric, just save the JSON as an artifact
       - name: Upload UDF payload for inspection
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: udf-payload
           path: udf_payload.json
+
 
       # - name: Authenticate and Deploy UDF
       #   env:
