@@ -38,7 +38,7 @@ def append_status_to_delta_rust(table_path: str, job_metadata: dict | pd.DataFra
 # --- Usine de Décorateurs (Décorateur avec Paramètres) ---
 # ----------------------------------------------------------------------
 
-def log_etl_status_factory(delta_path: str, schema_dtype: dict, job_id = uuid.uuid4().int % (10**18) ):
+def log_etl_status_factory(delta_path: str, schema_dtype: dict, job_id = uuid.uuid4().int % (10**18), job_name = ""):
     """
     Ceci est l'usine qui prend le chemin (path) en argument et retourne le décorateur.
     """
@@ -49,7 +49,6 @@ def log_etl_status_factory(delta_path: str, schema_dtype: dict, job_id = uuid.uu
         @wraps(func)
         def wrapper(*args, **kwargs):
             
-            job_name = func.__name__
             start_time = datetime.now()
             status = 'FAILURE'
             result = None

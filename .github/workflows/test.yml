@@ -29,8 +29,6 @@ jobs:
         run: |
           pytest tests/ --maxfail=1 --disable-warnings -v
         
-            # 6️⃣ Package UDF code with versioning
-
       - name: Build UDF payload
         if: success()
         run: python msfutilspkg/utils/build_udf_payload.py
@@ -42,3 +40,90 @@ jobs:
         with:
           name: udf-payload
           path: udf_payload.json
+
+      # - name: Authenticate and Deploy UDF
+      #   env:
+      #     TENANT_ID: ${{ secrets.TENANT_ID }}
+      #     FABRIC_CLIENT_ID: ${{ secrets.FABRIC_CLIENT_ID }}
+      #     FABRIC_CLIENT_SECRET: ${{ secrets.FABRIC_CLIENT_SECRET }}
+      #     FABRIC_WORKSPACE_ID: ${{ secrets.FABRIC_WORKSPACE_ID }}
+      #     FABRIC_UDF_NAME: "sync_dataframes_with_old_new"
+      #     TOKEN: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InJ0c0ZULWItN0x1WTdEVlllU05LY0lKN1ZuYyIsImtpZCI6InJ0c0ZULWItN0x1WTdEVlllU05LY0lKN1ZuYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5mYWJyaWMubWljcm9zb2Z0LmNvbSIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzRkOWRkMWFmLTgzY2UtNGU5Yi1iMDkwLWIwNTQzY2NjMmIzMS8iLCJpYXQiOjE3NjMzODM4MDMsIm5iZiI6MTc2MzM4MzgwMywiZXhwIjoxNzYzMzg4ODg4LCJhY2N0IjowLCJhY3IiOiIxIiwiYWlvIjoiQVhRQWkvOGFBQUFBUVlVQ0pxYllmYW1LYzZoR2xteDhYb3VZcXRCeEdjVGE5WVpsN3R4UEpRN0xsRFVCZ2pzY2tqbk9SbnhJdk9tQk1IL2Z2OElVVmtJWGFDa3R3eG94Skx4ZDdlb1pCayt5d2kyeUwyZWszc1lIOUlOVVRSSkJCcTVkcGpXVkQzMDZwUFVWMlBERFV6OU5GUzNxVmJoTGlRPT0iLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiMThmYmNhMTYtMjIyNC00NWY2LTg1YjAtZjdiZjJiMzliM2YzIiwiYXBwaWRhY3IiOiIwIiwiZGV2aWNlaWQiOiI3MzQwZjcwMi05MDMzLTQ5ZjYtYWE2MS00NTkxM2M5MmNmZjUiLCJmYW1pbHlfbmFtZSI6IkR1dml2aWVyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9sZSIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjgxLjI0Ni43MC4yMzQiLCJuYW1lIjoiQ2Fyb2xlIER1dml2aWVyIChGYWJyaWMgQWRtaW4pIiwib2lkIjoiOWIwODk2ZTAtMWYwOC00NGMzLTgxNjMtYTBhNWEwZDJlNTk4Iiwib25wcmVtX3NpZCI6IlMtMS01LTIxLTc1MDU4NDQ1MC0xNDYxOTg2MTUxLTE0MzUzMjUyMTktNDE4MTQiLCJwdWlkIjoiMTAwMzIwMDUxNDU5MEMwQSIsInJoIjoiMS5BUkFBcjlHZFRjNkRtMDZ3a0xCVVBNd3JNUWtBQUFBQUFBQUF3QUFBQUFBQUFBQVFBS1lRQUEuIiwic2NwIjoiQXBwLlJlYWQuQWxsIENhcGFjaXR5LlJlYWQuQWxsIENhcGFjaXR5LlJlYWRXcml0ZS5BbGwgQ29ubmVjdGlvbi5SZWFkLkFsbCBDb25uZWN0aW9uLlJlYWRXcml0ZS5BbGwgQ29udGVudC5DcmVhdGUgRGFzaGJvYXJkLlJlYWQuQWxsIERhc2hib2FyZC5SZWFkV3JpdGUuQWxsIERhdGFmbG93LlJlYWQuQWxsIERhdGFmbG93LlJlYWRXcml0ZS5BbGwgRGF0YXNldC5SZWFkLkFsbCBEYXRhc2V0LlJlYWRXcml0ZS5BbGwgR2F0ZXdheS5SZWFkLkFsbCBHYXRld2F5LlJlYWRXcml0ZS5BbGwgSXRlbS5FeGVjdXRlLkFsbCBJdGVtLkV4dGVybmFsRGF0YVNoYXJlLkFsbCBJdGVtLlJlYWRXcml0ZS5BbGwgSXRlbS5SZXNoYXJlLkFsbCBPbmVMYWtlLlJlYWQuQWxsIE9uZUxha2UuUmVhZFdyaXRlLkFsbCBQaXBlbGluZS5EZXBsb3kgUGlwZWxpbmUuUmVhZC5BbGwgUGlwZWxpbmUuUmVhZFdyaXRlLkFsbCBSZXBvcnQuUmVhZFdyaXRlLkFsbCBSZXBydC5SZWFkLkFsbCBTdG9yYWdlQWNjb3VudC5SZWFkLkFsbCBTdG9yYWdlQWNjb3VudC5SZWFkV3JpdGUuQWxsIFRhZy5SZWFkLkFsbCBUZW5hbnQuUmVhZC5BbGwgVGVuYW50LlJlYWRXcml0ZS5BbGwgVXNlclN0YXRlLlJlYWRXcml0ZS5BbGwgV29ya3NwYWNlLkdpdENvbW1pdC5BbGwgV29ya3NwYWNlLkdpdFVwZGF0ZS5BbGwgV29ya3NwYWNlLlJlYWQuQWxsIFdvcmtzcGFjZS5SZWFkV3JpdGUuQWxsIiwic2lkIjoiMDA5OGM1NzktZjVjNS03Y2JhLWFmNGYtMTljYTZmMWEyMGYxIiwic2lnbmluX3N0YXRlIjpbImR2Y19tbmdkIiwiZHZjX2NtcCIsImttc2kiXSwic3ViIjoiNmlaQ3pDMjI3MmoxWTNHT2x6ZUFSUVg5aEF0VDlmbVktdWtkTGpGWGJkWSIsInRpZCI6IjRkOWRkMWFmLTgzY2UtNGU5Yi1iMDkwLWIwNTQzY2NjMmIzMSIsInVuaXF1ZV9uYW1lIjoiY2R1dml2aWVyZGF0YUBicnVzc2Vscy5tc2Yub3JnIiwidXBuIjoiY2R1dml2aWVyZGF0YUBicnVzc2Vscy5tc2Yub3JnIiwidXRpIjoiV3B6OHNuLTY1a0tmZ19yMWtyY3lBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19hY3RfZmN0IjoiMyA1IiwieG1zX2Z0ZCI6ImZaaDRaQjZoTWhFcG9nM0lPc2pBLW9HOHplZHdhY2V3NzJKbU1UaVRFZ2NCYzNkbFpHVnVZeTFrYzIxeiIsInhtc19pZHJlbCI6IjEgMiIsInhtc19zdWJfZmN0IjoiNCAzIn0.LMb_7OUWkSK02YX30Y8Np2aHone4sUYqtRpwq6ZiT__VDaNgk90C1v-8gJG8C7jdZIDGxIxuJedw8i4UDeb1dGHuKk0THFKsbiZMoxnHFnpN5Xicn0cUvpabWXeOrYIIjnUPN4ef-SQJ8RzYHBI3VCiOHt_bWm1Kj4P7bL0-j0idsoBE3CeXhr7UM2tE9NeVVWILn5a105wkaNHqvy1WSgIMlm-_evx-KHTIeJMYYyIlkyCdxQahbMknlpJvtvAVqj0fl6x-cGAhjYRtn4b7pVd-FNS1BxCrdzH0eYpO5Vv9Ek0RKcGyxDduEgn6-fL_B7_UhjvLNUtidsmIjdLxSg"
+      #   run: |
+      #     # --- 1. Get Access Token ---
+      #     echo "🔐 Requesting Fabric API token..."
+      #     TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InJ0c0ZULWItN0x1WTdEVlllU05LY0lKN1ZuYyIsImtpZCI6InJ0c0ZULWItN0x1WTdEVlllU05LY0lKN1ZuYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5mYWJyaWMubWljcm9zb2Z0LmNvbSIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzRkOWRkMWFmLTgzY2UtNGU5Yi1iMDkwLWIwNTQzY2NjMmIzMS8iLCJpYXQiOjE3NjMzODM4MDMsIm5iZiI6MTc2MzM4MzgwMywiZXhwIjoxNzYzMzg4ODg4LCJhY2N0IjowLCJhY3IiOiIxIiwiYWlvIjoiQVhRQWkvOGFBQUFBUVlVQ0pxYllmYW1LYzZoR2xteDhYb3VZcXRCeEdjVGE5WVpsN3R4UEpRN0xsRFVCZ2pzY2tqbk9SbnhJdk9tQk1IL2Z2OElVVmtJWGFDa3R3eG94Skx4ZDdlb1pCayt5d2kyeUwyZWszc1lIOUlOVVRSSkJCcTVkcGpXVkQzMDZwUFVWMlBERFV6OU5GUzNxVmJoTGlRPT0iLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiMThmYmNhMTYtMjIyNC00NWY2LTg1YjAtZjdiZjJiMzliM2YzIiwiYXBwaWRhY3IiOiIwIiwiZGV2aWNlaWQiOiI3MzQwZjcwMi05MDMzLTQ5ZjYtYWE2MS00NTkxM2M5MmNmZjUiLCJmYW1pbHlfbmFtZSI6IkR1dml2aWVyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9sZSIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjgxLjI0Ni43MC4yMzQiLCJuYW1lIjoiQ2Fyb2xlIER1dml2aWVyIChGYWJyaWMgQWRtaW4pIiwib2lkIjoiOWIwODk2ZTAtMWYwOC00NGMzLTgxNjMtYTBhNWEwZDJlNTk4Iiwib25wcmVtX3NpZCI6IlMtMS01LTIxLTc1MDU4NDQ1MC0xNDYxOTg2MTUxLTE0MzUzMjUyMTktNDE4MTQiLCJwdWlkIjoiMTAwMzIwMDUxNDU5MEMwQSIsInJoIjoiMS5BUkFBcjlHZFRjNkRtMDZ3a0xCVVBNd3JNUWtBQUFBQUFBQUF3QUFBQUFBQUFBQVFBS1lRQUEuIiwic2NwIjoiQXBwLlJlYWQuQWxsIENhcGFjaXR5LlJlYWQuQWxsIENhcGFjaXR5LlJlYWRXcml0ZS5BbGwgQ29ubmVjdGlvbi5SZWFkLkFsbCBDb25uZWN0aW9uLlJlYWRXcml0ZS5BbGwgQ29udGVudC5DcmVhdGUgRGFzaGJvYXJkLlJlYWQuQWxsIERhc2hib2FyZC5SZWFkV3JpdGUuQWxsIERhdGFmbG93LlJlYWQuQWxsIERhdGFmbG93LlJlYWRXcml0ZS5BbGwgRGF0YXNldC5SZWFkLkFsbCBEYXRhc2V0LlJlYWRXcml0ZS5BbGwgR2F0ZXdheS5SZWFkLkFsbCBHYXRld2F5LlJlYWRXcml0ZS5BbGwgSXRlbS5FeGVjdXRlLkFsbCBJdGVtLkV4dGVybmFsRGF0YVNoYXJlLkFsbCBJdGVtLlJlYWRXcml0ZS5BbGwgSXRlbS5SZXNoYXJlLkFsbCBPbmVMYWtlLlJlYWQuQWxsIE9uZUxha2UuUmVhZFdyaXRlLkFsbCBQaXBlbGluZS5EZXBsb3kgUGlwZWxpbmUuUmVhZC5BbGwgUGlwZWxpbmUuUmVhZFdyaXRlLkFsbCBSZXBvcnQuUmVhZFdyaXRlLkFsbCBSZXBydC5SZWFkLkFsbCBTdG9yYWdlQWNjb3VudC5SZWFkLkFsbCBTdG9yYWdlQWNjb3VudC5SZWFkV3JpdGUuQWxsIFRhZy5SZWFkLkFsbCBUZW5hbnQuUmVhZC5BbGwgVGVuYW50LlJlYWRXcml0ZS5BbGwgVXNlclN0YXRlLlJlYWRXcml0ZS5BbGwgV29ya3NwYWNlLkdpdENvbW1pdC5BbGwgV29ya3NwYWNlLkdpdFVwZGF0ZS5BbGwgV29ya3NwYWNlLlJlYWQuQWxsIFdvcmtzcGFjZS5SZWFkV3JpdGUuQWxsIiwic2lkIjoiMDA5OGM1NzktZjVjNS03Y2JhLWFmNGYtMTljYTZmMWEyMGYxIiwic2lnbmluX3N0YXRlIjpbImR2Y19tbmdkIiwiZHZjX2NtcCIsImttc2kiXSwic3ViIjoiNmlaQ3pDMjI3MmoxWTNHT2x6ZUFSUVg5aEF0VDlmbVktdWtkTGpGWGJkWSIsInRpZCI6IjRkOWRkMWFmLTgzY2UtNGU5Yi1iMDkwLWIwNTQzY2NjMmIzMSIsInVuaXF1ZV9uYW1lIjoiY2R1dml2aWVyZGF0YUBicnVzc2Vscy5tc2Yub3JnIiwidXBuIjoiY2R1dml2aWVyZGF0YUBicnVzc2Vscy5tc2Yub3JnIiwidXRpIjoiV3B6OHNuLTY1a0tmZ19yMWtyY3lBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19hY3RfZmN0IjoiMyA1IiwieG1zX2Z0ZCI6ImZaaDRaQjZoTWhFcG9nM0lPc2pBLW9HOHplZHdhY2V3NzJKbU1UaVRFZ2NCYzNkbFpHVnVZeTFrYzIxeiIsInhtc19pZHJlbCI6IjEgMiIsInhtc19zdWJfZmN0IjoiNCAzIn0.LMb_7OUWkSK02YX30Y8Np2aHone4sUYqtRpwq6ZiT__VDaNgk90C1v-8gJG8C7jdZIDGxIxuJedw8i4UDeb1dGHuKk0THFKsbiZMoxnHFnpN5Xicn0cUvpabWXeOrYIIjnUPN4ef-SQJ8RzYHBI3VCiOHt_bWm1Kj4P7bL0-j0idsoBE3CeXhr7UM2tE9NeVVWILn5a105wkaNHqvy1WSgIMlm-_evx-KHTIeJMYYyIlkyCdxQahbMknlpJvtvAVqj0fl6x-cGAhjYRtn4b7pVd-FNS1BxCrdzH0eYpO5Vv9Ek0RKcGyxDduEgn6-fL_B7_UhjvLNUtidsmIjdLxSg"
+
+      #     if [ "$TOKEN" == "null" ]; then
+      #       echo "::error::Failed to retrieve Fabric API token."
+      #       exit 1
+      #     fi
+
+      #     # --- 2. Check if UDF Item Exists ---
+      #     echo "🔎 Checking for existing UDF item named: ${FABRIC_UDF_NAME}"
+          
+      #     # Use a filter/search endpoint to find the item ID
+      #     SEARCH_URL="https://api.fabric.microsoft.com/v1/workspaces/${FABRIC_WORKSPACE_ID}/items?%24filter=name+eq+'${FABRIC_UDF_NAME}'&%24select=id"
+      #     UDF_ITEM_ID=$(curl -s -X GET "${SEARCH_URL}" \
+      #       -H "Authorization: Bearer $TOKEN" \
+      #       | jq -r '.value[0].id // empty') # Extract the ID, or empty string if not found
+
+      #     # --- 3. Create UDF Item if it Doesn't Exist ---
+      #     if [ -z "$UDF_ITEM_ID" ]; then
+      #       echo "🆕 UDF item not found. Creating new item: ${FABRIC_UDF_NAME}"
+      #       CREATE_BODY='{"displayName": "${FABRIC_UDF_NAME}", "type": "UserDataFunction"}'
+            
+      #       CREATE_RESPONSE=$(curl -s -X POST "https://api.fabric.microsoft.com/v1/workspaces/${FABRIC_WORKSPACE_ID}/items" \
+      #         -H "Authorization: Bearer $TOKEN" \
+      #         -H "Content-Type: application/json" \
+      #         -d "$CREATE_BODY" )
+              
+      #       UDF_ITEM_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
+            
+      #       if [ "$UDF_ITEM_ID" == "null" ]; then
+      #         echo "::error::Failed to create UDF item."
+      #         echo "Response: ${CREATE_RESPONSE}"
+      #         exit 1
+      #       fi
+      #       echo "✅ UDF item created with ID: ${UDF_ITEM_ID}"
+      #     else
+      #       echo "👍 UDF item found with ID: ${UDF_ITEM_ID}"
+      #     fi
+          
+      #     # --- 4. Update UDF Definition (The Actual Code) ---
+      #     echo "📝 Preparing UDF code definition..."
+          
+      #     # Base64 Encode the UDF payload file
+      #     UDF_PAYLOAD_B64=$(base64 udf_payload.json | tr -d '\n')
+          
+      #     # Construct the API Body with the Base64 payload using jq
+      #     API_BODY=$(jq -n \
+      #       --arg payload "$UDF_PAYLOAD_B64" \
+      #       '{
+      #         "definition": {
+      #           "parts": [
+      #             {
+      #               "path": "UserDataFunctionV1.json", 
+      #               "payload": $payload,
+      #               "payloadType": "InlineBase64"
+      #             }
+      #           ]
+      #         }
+      #       }')
+            
+      #     echo "🚀 Updating UDF Definition in Fabric (ID: ${UDF_ITEM_ID})..."
+      #     UPDATE_URL="https://api.fabric.microsoft.com/v1/workspaces/${FABRIC_WORKSPACE_ID}/userDataFunctions/${UDF_ITEM_ID}/updateDefinition"
+          
+      #     UPDATE_RESPONSE=$(curl -s -X POST "${UPDATE_URL}" \
+      #       -H "Authorization: Bearer $TOKEN" \
+      #       -H "Content-Type: application/json" \
+      #       -d "$API_BODY" ) # Pass the constructed JSON string
+            
+      #     # Check for errors in the update response (optional but recommended)
+      #     if echo "$UPDATE_RESPONSE" | grep -q "error"; then
+      #         echo "::error::Failed to update UDF definition."
+      #         echo "Response: ${UPDATE_RESPONSE}"
+      #         exit 1
+      #     fi
+          
+      #     echo "✅ UDF definition updated successfully."

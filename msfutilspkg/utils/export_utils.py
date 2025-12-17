@@ -116,3 +116,59 @@ def write_excel_xlsx(df: pd.DataFrame, filename: str, sheet_name: str = "Sheet1"
     # Use pandas built-in Excel writer
     df.to_excel(filename, sheet_name=sheet_name, index=False)
     print(f"✅ File saved as '{filename}' in .xlsx format.")
+
+
+def write_multiple_sheets_xlsx(
+    dfs: list[pd.DataFrame],
+    filename: str,
+    sheet_names: list[str] | None = None,
+    append: bool = False
+):
+    """
+    Write multiple DataFrames to an Excel file with optional sheet-name
+    auto-generation, validation, and appending.
+
+    Parameters
+    ----------
+    dfs : list[pandas.DataFrame]
+        List of DataFrames to write.
+    filename : str
+        Output Excel file path.
+    sheet_names : list[str] or None
+        List of sheet names. If None, auto-generate as Sheet1, Sheet2, ...
+    append : bool, default False
+        If True, append sheets to an existing Excel file.
+    """
+
+    # Auto-generate sheet names if none provided
+    if sheet_names is None:
+        sheet_names = [f"Sheet{i+1}" for i in range(len(dfs))]
+
+    # Validate list lengths
+    if len(dfs) != len(sheet_names):
+        raise ValueError("Length of dfs must match length of sheet_names.")
+
+    # Validate unique sheet names
+    if len(sheet_names) != len(set(sheet_names)):
+        raise ValueError("Duplicate sheet names detected.")
+
+    # Determine ExcelWriter mode
+    mode = "a" if append and os.path.exists(filename) else "w"
+
+    with pd.ExcelWriter(filename, mode=mode, engine="openpyxl") as writer:
+
+        # If appending, ensure we keep existing sheets
+        if append and os.path.exists(filename):
+            writer.book = writer.book
+            writer.sheets = {ws.title: ws for ws in writer.book.worksheets}
+
+        # Write all DataFrames
+        for df, sheet in zip(dfs, sheet_names):
+            df.to_excel(writer, sheet_name=sheet, index=False)
+
+    print(f"✅ File saved: {filename}")
+    print(f"📄 Sheets written: {', '.join(sheet_names)}")
+    if append:
+        print("➕ Mode: appended to existing file.")
+    else:
+        print("🆕 Mode: created new file.")

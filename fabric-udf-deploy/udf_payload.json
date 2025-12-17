@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "language": "Python",
+    "mainFile": "udf_source.py",
+    "files": [
+      {
+        "content": "# src/udf_source.py\n\nfrom pyspark.sql.functions import udf\nfrom pyspark.sql.types import IntegerType\n\n@udf.function(returnType=IntegerType())\ndef add_two_numbers(a: int, b: int) -> int:\n    \"\"\"Spark UDF to add two integers and return the result.\"\"\"\n    return a + b\n\n@udf.function(returnType='string')\ndef simple_echo(value: str) -> str:\n    \"\"\"Spark UDF that simply echoes the input string.\"\"\"\n    return f\"Echo: {value.upper()}\"",
+        "path": "udf_source.py",
+        "mimeType": "text/x-python"
+      }
+    ]
+  },
+  "type": "UserDataFunction"
+}
