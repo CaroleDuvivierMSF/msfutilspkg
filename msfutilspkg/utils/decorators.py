@@ -120,8 +120,8 @@ def log_etl_status_factory(delta_path: str, schema_dtype = None, job_id = uuid.u
                         StructField("records_skipped", LongType(), True),
                         StructField("error_message", StringType(), True)
                     ])
-                    spark = SparkSession.builder.getOrCreate()
-                    df_new_row_pyspark = spark.createDataFrame(pd.DataFrame([job_metadata]), schema=schema_dtype)
+                    spark_session = SparkSession.builder.getOrCreate()
+                    df_new_row_pyspark = spark_session.createDataFrame(pd.DataFrame([job_metadata]), schema=schema_dtype)
                     df_new_row_pyspark.write.format("delta").mode("append").saveAsTable(delta_path)
                 else:
                     if schema_dtype is None:
