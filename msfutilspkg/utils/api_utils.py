@@ -1,4 +1,4 @@
-def call_api(url, auth_key, payload = {}, headers=None, method="GET"):
+def call_api(url, auth_key, payload = {}, headers=None, method="GET", cookies=None):
     import requests
 
     if headers is None:
@@ -8,11 +8,11 @@ def call_api(url, auth_key, payload = {}, headers=None, method="GET"):
         }
 
     if method == "POST":
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, cookies=cookies)
     elif method == "GET":   
-        response = requests.get(url, headers=headers, json=payload)
+        response = requests.get(url, headers=headers, json=payload, cookies=cookies)
     elif method == "PUT":   
-        response = requests.put(url, headers=headers, json=payload)
+        response = requests.put(url, headers=headers, json=payload, cookies=cookies)
 
     response.raise_for_status()
     return response
