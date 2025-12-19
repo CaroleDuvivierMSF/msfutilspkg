@@ -38,7 +38,7 @@ def append_status_to_delta_rust(table_path: str, job_metadata: dict | pd.DataFra
 # --- Usine de Décorateurs (Décorateur avec Paramètres) ---
 # ----------------------------------------------------------------------
 
-def log_etl_status_factory(delta_path: str, schema_dtype: dict, job_id = uuid.uuid4().int % (10**18), job_name = ""):
+def log_etl_status_factory(delta_path: str, schema_dtype: dict, job_id = uuid.uuid4().int % (10**18), job_name = "", engine="pyspark"):
     """
     Ceci est l'usine qui prend le chemin (path) en argument et retourne le décorateur.
     """
@@ -97,9 +97,14 @@ def log_etl_status_factory(delta_path: str, schema_dtype: dict, job_id = uuid.uu
                     'records_skipped': metrics.get('records_skipped', 0),
                     'error_message': error_message,
                 }
+                if engine == "pyspark":
 
-                # Utiliser le chemin passé à l'usine de décorateurs (delta_path)
-                append_status_to_delta_rust(delta_path, job_metadata, schema_dtype)
+                    # Utiliser le chemin passé à l'usine de décorateurs (delta_path)
+                    df_new_row_pyspark = spark.createDataFrame(pd.DataFrame([job_metadata]))
+                    df_new_row_pyspark.write.format("delta").mode("append").saveAsTable(delta_path)
+                else:
+                    # Utiliser le chemin passé à l'usine de décorateurs (delta_path)
+                    append_status_to_delta_rust(delta_path, job_metadata, schema_dtype)
             
             return result
 
