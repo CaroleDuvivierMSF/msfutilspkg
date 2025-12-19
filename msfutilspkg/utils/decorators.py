@@ -38,7 +38,7 @@ def append_status_to_delta_rust(table_path: str, job_metadata: dict | pd.DataFra
 # --- Usine de Décorateurs (Décorateur avec Paramètres) ---
 # ----------------------------------------------------------------------
 
-def log_etl_status_factory(delta_path: str, schema_dtype, job_id = uuid.uuid4().int % (10**18), job_name = "", engine="pyspark"):
+def log_etl_status_factory(delta_path: str, schema_dtype = None, job_id = uuid.uuid4().int % (10**18), job_name = "", engine="pyspark"):
     """
     Ceci est l'usine qui prend le chemin (path) en argument et retourne le décorateur.
     """
@@ -98,12 +98,47 @@ def log_etl_status_factory(delta_path: str, schema_dtype, job_id = uuid.uuid4().
                     'error_message': error_message,
                 }
                 if engine == "pyspark":
+                    
                     # Utiliser le chemin passé à l'usine de décorateurs (delta_path)
                     from pyspark.sql import SparkSession
+                    from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType, LongType
+
+                    # Define the explicit schema for your log table
+                    from pyspark.sql.types import StructType, StructField, StringType, LongType, TimestampType
+
+                    schema_dtype = StructType([
+                        StructField("job_id", StringType(), True),
+                        StructField("job_name", StringType(), True),
+                        StructField("start_time", TimestampType(), True),
+                        StructField("end_time", TimestampType(), True),
+                        StructField("job_date", StringType(), True),
+                        StructField("status", StringType(), True),
+                        StructField("records_processed", LongType(), True),
+                        StructField("records_created", LongType(), True),
+                        StructField("records_updated", LongType(), True),
+                        StructField("records_kept", LongType(), True),
+                        StructField("records_skipped", LongType(), True),
+                        StructField("error_message", StringType(), True)
+                    ])
                     spark = SparkSession.builder.getOrCreate()
                     df_new_row_pyspark = spark.createDataFrame(pd.DataFrame([job_metadata]), schema=schema_dtype)
                     df_new_row_pyspark.write.format("delta").mode("append").saveAsTable(delta_path)
                 else:
+                    if schema_dtype is None:
+                        schema_dtype = {
+                            'job_id': 'str',
+                            'job_name': 'str',
+                            'start_time': 'datetime64[ns]',
+                            'end_time': 'datetime64[ns]',
+                            'job_date': 'str',
+                            'status': 'str',
+                            'records_processed': 'Int64',
+                            'records_created': 'Int64',
+                            'records_updated': 'Int64',
+                            'records_kept': 'Int64',
+                            'records_skipped': 'Int64',
+                            'error_message': 'str',
+                        }
                     # Utiliser le chemin passé à l'usine de décorateurs (delta_path)
                     append_status_to_delta_rust(delta_path, job_metadata, schema_dtype)
             
