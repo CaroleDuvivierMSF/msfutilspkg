@@ -16,7 +16,7 @@ build:
 	$(PYTHON) -m build
 
 install:
-	$(PYTHON) -m pip install --upgrade dist/*.whl
+	$(PYTHON) -m pip install --upgrade --find-links dist msfutilspkg
 
 reinstall:
 	$(PYTHON) -m pip uninstall -y $$(basename $$(grep -Po '(?<=name = ").*(?=")' pyproject.toml))

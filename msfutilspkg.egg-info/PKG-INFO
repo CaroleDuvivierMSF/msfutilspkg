@@ -7,6 +7,7 @@ Requires-Dist: deltalake==1.2.1
 Requires-Dist: sqlalchemy==2.0.43
 Requires-Dist: pandas==2.3.3
 Requires-Dist: numpy==2.3.3
+Requires-Dist: matplotlib==3.10.8
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
 Requires-Dist: pytest-cov>=7.0.0; extra == "dev"
