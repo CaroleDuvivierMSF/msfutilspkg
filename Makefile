@@ -1,6 +1,7 @@
 # Change this if your Python executable is different
 PYTHON ?= python
 
+
 .PHONY: build install reinstall clean distclean upload help
 
 help:
@@ -18,9 +19,9 @@ build:
 install:
 	$(PYTHON) -m pip install --upgrade --find-links dist msfutilspkg
 
+
 reinstall:
-	$(PYTHON) -m pip uninstall -y $$(basename $$(grep -Po '(?<=name = ").*(?=")' pyproject.toml))
-	$(PYTHON) -m pip install --upgrade dist/*.whl
+	python -m pip install --force-reinstall --find-links dist msfutilspkg
 
 clean:
 	rm -rf build/ dist/ *.egg-info

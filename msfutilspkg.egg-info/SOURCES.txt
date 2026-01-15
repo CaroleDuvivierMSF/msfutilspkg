@@ -9,11 +9,9 @@ msfutilspkg.egg-info/top_level.txt
 msfutilspkg/utils/__init__.py
 msfutilspkg/utils/api_utils.py
 msfutilspkg/utils/build_udf_payload.py
-msfutilspkg/utils/create_cc.py
 msfutilspkg/utils/data_utils.py
 msfutilspkg/utils/decorators.py
 msfutilspkg/utils/export_utils.py
 msfutilspkg/utils/import_utils.py
-msfutilspkg/utils/update_cc.py
 msfutilspkg/utils/update_unifield_cc.py
 tests/test_sync_dataframes.py

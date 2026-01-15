@@ -1,5 +1,10 @@
+import logging
+import requests 
+
+logger = logging.getLogger(__name__)
+
+
 def call_api(url, auth_key, payload = {}, headers=None, method="GET", cookies=None):
-    import requests
 
     if headers is None:
         headers = {

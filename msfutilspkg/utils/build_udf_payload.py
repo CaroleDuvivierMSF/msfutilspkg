@@ -1,6 +1,10 @@
 import json
 import inspect
 import importlib
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # === CONFIG ===
 UDF_FUNCTION = "msfutilspkg.utils.data_utils.sync_dataframes_with_old_new"  # module.path.to.function
@@ -26,4 +30,4 @@ payload = {
 with open(OUTPUT_FILE, "w") as f:
     json.dump(payload, f, indent=2)
 
-print(f"✅ UDF payload written to {OUTPUT_FILE}")
+logger.info(f"✅ UDF payload written to {OUTPUT_FILE}")

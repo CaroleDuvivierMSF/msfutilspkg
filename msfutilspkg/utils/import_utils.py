@@ -2,6 +2,12 @@
 from typing import List
 import pandas as pd
 from sqlalchemy import create_engine, text
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class PostgresReader:
     def __init__(self, host, port, dbname, user, password, **kwargs):
         """
@@ -32,7 +38,7 @@ class PostgresReader:
                 df = pd.read_sql(text(sql_query), conn)
             return df
         except Exception as e:
-            print(f"❌ Error querying database: {e}")
+            logger.info(f"Error querying database: {e}")
             return None
         
 def get_connection_informations(connection_name, path_to_connections=None, environment: str = "test") -> dict:
@@ -54,8 +60,8 @@ def read_msf_tables(connection_names: List[str], table_names: List[str], table_f
 
         df = PostgresReader(**connection_info).query(query)
         if df is not None:
-            print(f"✅ Successfully read table: {table_name} from connection: {connection} and environment : {environment}")
+            logger.info(f"Successfully read table: {table_name} from connection: {connection} and environment : {environment}")
             tables[table_name] = df
         else:
-            print(f"❌ Failed to read table: {table_name} from connection: {connection} and environment : {environment}")
+            logger.info(f"Failed to read table: {table_name} from connection: {connection} and environment : {environment}")
     return tables

@@ -2,6 +2,9 @@
 # -*- encoding: utf-8 -*-
 import xmlrpc.client
 import base64
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def update_cost_centers(file_to_import: str, dbname: str, user: str, password: str, host: str, port: int, context: str = "update", **kwargs):
@@ -38,8 +41,8 @@ def update_cost_centers(file_to_import: str, dbname: str, user: str, password: s
         ['state', 'info_message', 'error_message', 'warning_message'],
         lang_context)
     
-    print('State: %s' % result['state'])
-    print('Message: %s' % result['info_message'])
-    print('Error Message: %s' % result['error_message'])
-    print('Warning Message: %s' % result['warning_message'])
+    logger.info('State: %s' % result['state'])
+    logger.info('Message: %s' % result['info_message'])
+    logger.info('Error Message: %s' % result['error_message'])
+    logger.info('Warning Message: %s' % result['warning_message'])
     return result

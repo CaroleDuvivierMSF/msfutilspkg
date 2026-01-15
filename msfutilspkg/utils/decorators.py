@@ -4,8 +4,10 @@ import pandas as pd
 from datetime import datetime
 from functools import wraps
 import uuid
-import time
-import os
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # --- Fonction utilitaire pour l'écriture Delta ---
 
@@ -20,7 +22,7 @@ def append_status_to_delta_rust(table_path: str, job_metadata: dict | pd.DataFra
         df_new_row = df_new_row.astype(schema_dtype)
     except Exception as e:
         # Ceci est très important: si une clé manque, le DataFrame sera créé avec le mauvais type.
-        print(f"Erreur de conversion de type. Vérifiez que toutes les clés du schéma sont dans le dictionnaire de métadonnées: {e}")
+        logger.info(f"Erreur de conversion de type. Vérifiez que toutes les clés du schéma sont dans le dictionnaire de métadonnées: {e}")
         raise 
 
     df_new_row['error_message'] = df_new_row['error_message'].fillna('')
@@ -32,7 +34,7 @@ def append_status_to_delta_rust(table_path: str, job_metadata: dict | pd.DataFra
         mode=mode
     )
     
-    print(f"Statut du job '{job_metadata.get('job_name')}' ajouté à la table Delta à {table_path}")
+    logger.info(f"Statut du job '{job_metadata.get('job_name')}' ajouté à la table Delta à {table_path}")
 
 # ----------------------------------------------------------------------
 # --- Usine de Décorateurs (Décorateur avec Paramètres) ---
@@ -64,7 +66,7 @@ def log_etl_status_factory(delta_path: str, schema_dtype = None, job_id = uuid.u
             }
             
             try:
-                print(f"Job '{job_name}' (ID: {job_id}) démarré...")
+                logger.info(f"Job '{job_name}' (ID: {job_id}) démarré...")
                 result = func(*args, **kwargs)
                 
                 if isinstance(result, dict):
@@ -77,7 +79,7 @@ def log_etl_status_factory(delta_path: str, schema_dtype = None, job_id = uuid.u
             except Exception as e:
                 status = 'FAILURE'
                 error_message = str(e)
-                print(f"ERREUR lors de l'exécution de '{job_name}': {e}")
+                logger.info(f"ERREUR lors de l'exécution de '{job_name}': {e}")
                 raise 
 
             finally:

@@ -4,6 +4,11 @@ import numpy as np
 import os, shutil
 from deltalake import DeltaTable
 from deltalake.writer import write_deltalake
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 
 def write_delta_lake_table(df: pd.DataFrame, table_path: str, schema_dtype: dict, mode: str = 'append'):
     """
@@ -16,7 +21,7 @@ def write_delta_lake_table(df: pd.DataFrame, table_path: str, schema_dtype: dict
         df_new_row = df_new_row.astype(schema_dtype)
     except Exception as e:
         # Ceci est très important: si une clé manque, le DataFrame sera créé avec le mauvais type.
-        print(f"Erreur de conversion de type. Vérifiez que toutes les clés du schéma sont dans le dictionnaire de métadonnées: {e}")
+        logger.info(f"Erreur de conversion de type. Vérifiez que toutes les clés du schéma sont dans le dictionnaire de métadonnées: {e}")
         raise 
 
     if os.path.exists(table_path) and mode == 'overwrite':
@@ -32,7 +37,7 @@ def write_delta_lake_table(df: pd.DataFrame, table_path: str, schema_dtype: dict
         mode = mode
     )
     
-    print(f"Statut du job '{df.get('job_name')}' ajouté à la table Delta à {table_path}")
+    logger.info(f"Statut du job '{df.get('job_name')}' ajouté à la table Delta à {table_path}")
 
 def write_excel_2003_xml_from_df(df, filename, sheet_name="Sheet1"):
     """
@@ -97,7 +102,7 @@ def write_excel_2003_xml_from_df(df, filename, sheet_name="Sheet1"):
     with open(filename, "w", encoding="utf-8") as f:
         f.write(xml_header + xml_rows + xml_footer)
 
-    print(f"✅ File saved as '{filename}'.")
+    logger.info(f"File saved as '{filename}'.")
 
     
 def write_excel_xlsx(df: pd.DataFrame, filename: str, sheet_name: str = "Sheet1"):
@@ -115,7 +120,7 @@ def write_excel_xlsx(df: pd.DataFrame, filename: str, sheet_name: str = "Sheet1"
     """
     # Use pandas built-in Excel writer
     df.to_excel(filename, sheet_name=sheet_name, index=False)
-    print(f"✅ File saved as '{filename}' in .xlsx format.")
+    logger.info(f"File saved as '{filename}' in .xlsx format.")
 
 
 def write_multiple_sheets_xlsx(
@@ -166,9 +171,9 @@ def write_multiple_sheets_xlsx(
         for df, sheet in zip(dfs, sheet_names):
             df.to_excel(writer, sheet_name=sheet, index=False)
 
-    print(f"✅ File saved: {filename}")
-    print(f"📄 Sheets written: {', '.join(sheet_names)}")
+    logger.info(f"File saved: {filename}")
+    logger.info(f"Sheets written: {', '.join(sheet_names)}")
     if append:
-        print("➕ Mode: appended to existing file.")
+        logger.info("Mode: appended to existing file.")
     else:
-        print("🆕 Mode: created new file.")
+        logger.info("Mode: created new file.")
