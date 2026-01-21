@@ -21,3 +21,8 @@ def call_api(url, auth_key, payload = {}, headers=None, method="GET", cookies=No
 
     response.raise_for_status()
     return response
+
+
+def test_function():
+    print("API utils working correctly.")
+    return True

@@ -11,7 +11,9 @@ setup(
         "sqlalchemy==2.0.43",
         "pandas==2.3.3",
         "numpy==2.3.3",
-        "matplotlib==3.10.8"
+        "matplotlib==3.10.8",
+        "xlutils==2.0.0",
+        "psycopg2-binary==2.9.10"
     ],
     extras_require={
         "dev": [

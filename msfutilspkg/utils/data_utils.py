@@ -1,10 +1,36 @@
 # Fabric function requirements
 # packages:
 #   - pandas
+from typing import Dict
 import pandas as pd
 import logging
+import numpy as np
 
 logger = logging.getLogger(__name__)
+
+def enforce_schema(df: pd.DataFrame, schema: Dict[str, str]) -> pd.DataFrame:
+    """
+    Enforce Lakehouse-compatible schema on a Pandas DataFrame.
+
+    Converts nullable integers, booleans, datetimes, and strings safely.
+    """
+    df = df.copy()
+    for col, dtype in schema.items():
+        if col not in df.columns:
+            df[col] = pd.NA  # Add missing columns as NULL
+        if dtype == "Int64":
+            # Convert numeric columns: NaN / Infinity -> pd.NA, then cast
+            df[col] = pd.to_numeric(df[col], errors="coerce").replace([np.inf, -np.inf], pd.NA).astype("Int64")
+        elif dtype == "boolean":
+            df[col] = df[col].astype("boolean")
+        elif dtype == "datetime64[ns]":
+            df[col] = pd.to_datetime(df[col], errors="coerce")
+        elif dtype == "str":
+            df[col] = df[col].astype("string").replace({pd.NA: None, np.nan: None})
+        else:
+            raise ValueError(f"Unsupported dtype {dtype} for column {col}")
+    return df
+
 
 
 def sync_dataframes_with_old_new(
