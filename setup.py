@@ -13,7 +13,8 @@ setup(
         "numpy==2.3.3",
         "matplotlib==3.10.8",
         "xlutils==2.0.0",
-        "psycopg2-binary==2.9.10"
+        "psycopg2-binary==2.9.10",
+        "pyspark==4.0.1"
     ],
     extras_require={
         "dev": [
