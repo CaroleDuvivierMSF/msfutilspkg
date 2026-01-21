@@ -5,6 +5,12 @@ from typing import Dict
 import pandas as pd
 import logging
 import numpy as np
+from pyspark.sql.types import (
+    StructType, StructField,
+    StringType, IntegerType,
+    LongType, BooleanType,
+    TimestampType
+)
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +27,14 @@ def enforce_schema(df: pd.DataFrame, schema: Dict[str, str]) -> pd.DataFrame:
         if dtype == "Int64":
             # Convert numeric columns: NaN / Infinity -> pd.NA, then cast
             df[col] = pd.to_numeric(df[col], errors="coerce").replace([np.inf, -np.inf], pd.NA).astype("Int64")
-        elif dtype == "boolean":
+        elif dtype in ["boolean", "bool"]:
             df[col] = df[col].astype("boolean")
         elif dtype == "datetime64[ns]":
             df[col] = pd.to_datetime(df[col], errors="coerce")
-        elif dtype == "str":
+        elif dtype in ["str", "string", "object"]:
             df[col] = df[col].astype("string").replace({pd.NA: None, np.nan: None})
         else:
-            raise ValueError(f"Unsupported dtype {dtype} for column {col}")
+            logger.warning(f"Unsupported dtype '{dtype}' for column '{col}'. Leaving as is.")
     return df
 
 
@@ -175,3 +181,42 @@ def sync_dataframes_with_old_new(
         "to_delete": to_delete,
         "to_keep": to_keep
     }
+
+
+def pandas_to_spark_schema(pandas_schema: dict) -> StructType:
+    """
+    Convert a Pandas schema dictionary to a PySpark StructType schema.
+
+    Args:
+        pandas_schema (dict): Mapping of column name -> pandas dtype as string
+            Example:
+            {
+                "positionNumber": "Int64",
+                "contractLengthInMonths": "Int64",
+                "isOpportunityPost": "boolean",
+                "startDate": "datetime64[ns]",
+                "projectCode": "str"
+            }
+
+    Returns:
+        StructType: PySpark schema object
+    """
+    type_mapping = {
+        "Int64": LongType(),          # Nullable integer in PySpark
+        "int64": LongType(),          # regular int
+        "boolean": BooleanType(),
+        "bool": BooleanType(),
+        "datetime64[ns]": TimestampType(),
+        "str": StringType(),
+        "string": StringType()
+    }
+
+    fields = []
+    for col, dtype in pandas_schema.items():
+        spark_type = type_mapping.get(dtype.lower() if isinstance(dtype, str) else dtype)
+        if spark_type is None:
+            raise ValueError(f"Unsupported pandas dtype '{dtype}' for column '{col}'")
+        fields.append(StructField(col, spark_type, nullable=True))  # always nullable for Lakehouse
+
+    return StructType(fields)
+

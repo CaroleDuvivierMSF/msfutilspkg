@@ -14,4 +14,4 @@ msfutilspkg/utils/decorators.py
 msfutilspkg/utils/export_utils.py
 msfutilspkg/utils/import_utils.py
 msfutilspkg/utils/update_unifield_cc.py
-tests/test_sync_dataframes.py
+tests/test_data_utils.py
