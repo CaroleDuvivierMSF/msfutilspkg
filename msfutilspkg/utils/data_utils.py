@@ -9,7 +9,7 @@ from pyspark.sql.types import (
     StructType, StructField,
     StringType, IntegerType,
     LongType, BooleanType,
-    TimestampType
+    TimestampType, DoubleType
 )
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,10 @@ def enforce_schema(df: pd.DataFrame, schema: Dict[str, str]) -> pd.DataFrame:
             df[col] = pd.NA  # Add missing columns as NULL
         if dtype == "Int64":
             # Convert numeric columns: NaN / Infinity -> pd.NA, then cast
-            df[col] = pd.to_numeric(df[col], errors="coerce").replace([np.inf, -np.inf], pd.NA).astype("Int64")
+            df[col] = pd.to_numeric(df[col], errors="coerce").replace([np.inf, -np.inf], np.nan).astype("Int64")
+        elif dtype == "Float64":
+            df[col] = pd.to_numeric(df[col], errors="coerce").replace([np.inf, -np.inf], np.nan).astype("Float64")
+            df[col] = df[col].where(df[col].notnull(), None)
         elif dtype in ["boolean", "bool"]:
             df[col] = df[col].astype("boolean")
         elif dtype == "datetime64[ns]":
@@ -208,7 +211,9 @@ def pandas_to_spark_schema(pandas_schema: dict) -> StructType:
         "bool": BooleanType(),
         "datetime64[ns]": TimestampType(),
         "str": StringType(),
-        "string": StringType()
+        "string": StringType(),
+        "float64": DoubleType(),
+        "Float64": DoubleType(),
     }
 
     fields = []
